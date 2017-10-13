@@ -75,10 +75,11 @@ many UAVs flying in the same area, so only 16 bits CRC has been chosen.
 
 #### Periodicity
 
-When any of those two constraints has been met a new payload MUST be sent:
+When any of those two constraints has been met a new position MUST be sent:
 
 - time delay of 3 seconds
 - spatial distance of 50 meters
+- vertical change of position greater than 5 meters
 
 #### Signature
 
@@ -94,7 +95,7 @@ respected before next try.
 A receiver SHOULD relay a payload. The relay bit MUST be decremented by one
 unit when relaying a payload.
 
-If the relay bit is null, the payload MUST NOT be relayed.
+If the relay bit is 0, the payload MUST NOT be relayed.
 
 #### Duty Cycle
 
@@ -114,100 +115,66 @@ one at the end.
 
 | block | description | type | bits | range |
 | ----- | ----------- | ---- | ---- | ----- |
-| HEADER | Protocol Identifier | Integer | 4 | 0-15 |
-| HEADER | Protocol Version | Integer | 4 | 0-15 |
+| HEADER | Protocol Version | Integer | 6 | 0-64 |
 
 
-#### Protocol Identifier
+#### Protocol Identifier & Version
 
 - Description: define the data structure specification used in the body
 - Format: unsigned integer
-- Length: 4 bits
+- Length: 6 bits
 - Values:
   - 0: UAV Open Tracking Protocol (this protocol)
-
-
-#### Protocol version
-
-- Description: version of the protocol used
-- Format: unsigned integer
-- Length: 4 bits
-- Values:
-  - 0: this protocol version
-
 
 ### Body
 
 
 | block | description | type | bits | range | unit |
 | ----- | ----------- | ---- | ---- | ----- | ---- |
-| ID | Manufacturer Identifier | String* | 18 | | N/A |
-| ID | Model Identifier | String* | 18 | | N/A |
-| ID | Serial Number | Integer | 24 | 0 — 16.000.000 | 1 |
-| ID | Registration Country | Integer | 12 | N/A |
-| TIME | Time of Day | Integer | 17 | 0 — 86400 | 1 second |
+| ID | Address | Integer | 32 | | N/A |
+| TIME | Time | Integer | 14 | 0 — 86400 | 1 second |
 | POSITION | Latitude | Integer | 25 | -90 — 90 | 180°/2^24 |
 | POSITION | Longitude | Integer | 25 | -180 — 180 | 360°/2^24 |
 | POSITION | Altitude | Integer | 14 | -1000 — 15000 | 1 meter |
-| POSITION | GPS Horizontal Accuracy | Integer | 7 | 0 — 127 | 1 meter |
-| POSITION | GPS Vertical Accuracy | Integer | 7 | 0 — 127 | 1 meter |
+| POSITION | GPS Horizontal Accuracy | Integer | 2 | see below  |  |
 | POSITION | GPS Fix | Boolean | 1 | 0 — 1 | N/A |
 | SPEED | Horizontal Speed | Integer | 8 | 0 — 255 | 1 meter/second |
 | SPEED | Vertical Speed | Integer | 7 | -63 — 63 | 1 meter/second |
 | SPEED | Heading | Integer | 9 | 0 — 359 | 1 degree |
 | FLAGS | Relay Count | Integer | 2 | 0 — 3 | N/A |
-| FLAGS | Urgency | Boolean | 1 | 0 — 1 | N/A |
+| FLAGS | Status | Bit flags | 2 | 0 — 1 | N/A |
 | FLAGS | UAV Category | 3 bits | 3 | | N/A |
 | CRC | CRC | String | 16 | | N/A |
 | SIGNATURE | Signature | String | 256 | | N/A |
 
-\* _The characters transposition algorithm is detailed in the annexes._
 
+#### Address
 
-#### Manufacturer Identification for a UAV / Transmitter
+Addresses should be be assigned to devices it can be during manufacturing process
+in a similar way to assigning MAC addresses to network cards. Alternatively addresses
+can be assigned in a similar way as ICAO transponder codes are issued. 
 
-- Description: Identifier for the manufacturer, provided by the country
+Mapping from address to type of aircraft, serial number, owner and other should be stored
+externally to limit size of radio packet size. Externally stored information should contain:
+
+- **Manufacturer Identification for a UAV / Transmitter** - Identifier for the manufacturer, provided by the country
   authority
-- Format: 3 readable encoded characters (see annexes)
-- Length: 18 bits
-- Example value for «DJI»: `100100 101010 101001`
-
-
-#### Model Identification for a UAV / Transmitter
-
-- Description: Identifier provided by the manufacturer
-- Format: 3 readable encoded characters (see annexes)
-- Length: 24 bits
-
-
-#### UAV Transmitter Serial Number
-
-- Description: Serial number for the device model
-- Format: 3 bits (16 millions of possible combinations). In case of
-  alphanumerical serial number a correspondence MUST BE provided by
-  the manufacturer.
-- Length: 18 bits
-- Example value for «SX1»: `110011 111000 010001`
-
-
-#### Country of Registration for a UAV / Transmitter
-
-- Description: Country identifier
-- Format: 2 readable encoded characters (see annexes)
-- Length: 12 bits
-- Example value for France («FR»): `100110 110010`
-
+- **Model Identification for a UAV / Transmitter** - Model Identification /Identifier provided by the manufacturer
+- **UAV Transmitter Serial Number** - Serial number for the device model
+- **Country of Registration for a UAV / Transmitter - Country identifier
 
 #### Time
 
-- Description: UTC time of the day, in seconds
+- Description: UTC time of the day expressed in tenths of seconds modulo 16384.
+**Provided time HAVE TO be exactly the time when position of aircraft was measured.**
+Ground stations receiving packet HAVE TO store it with receiving timestamp.
 - Format: unsigned integer
-- Length: 17 bits
+- Length: 14 bits
 
 
 #### Latitude
 
-- Description: Latitude WGS-84
+- Description: Latitude WGS-84 (What should be a source of this data GPS/GLONASS/Galileo? WAAS should be enabled or not?)
 - Format: Signed integer
 - Unit: 180/2^24 degree. Precision below 1.20 meters
 - Length: 25 bits
@@ -222,10 +189,11 @@ one at the end.
 
 #### Above Sea-Level Altitude
 
-- Description: Altitude above sea level
+- Description: Altitude above sea level - **Altitude should be calculated based on air pressure sensor. Standard ISA 
+pressure 1013.25hPa should be used for altitude calculation**
 - Format: Unsigned integer
 - Unit: 1 meter. The value is the exact altitude +1000.
-- Length: 7 bits
+- Length: 14 bits
 
 This allows representing altitudes in a -1000m / 15382 range with a 1 meter
 precision.
@@ -235,16 +203,14 @@ precision.
 
 - Description: Horizontal Accuracy of the GPS fix.
 - Format: Unsigned Integer.
-- Unit: 1 meter. Values range from 0 to 127 meter.
-- Length: 7 bits
-
-
-#### Vertical GPS Accuracy
-
-- Description: Horizontal Accuracy of the GPS fix.
-- Format: Unsigned Integer.
-- Unit: 1 meter. Values range from 0 to 127 meter.
-- Length: 7 bits
+- Unit: Accuracy is encoded in the following way
+| Field Value | Accuracy |
+|-------------|----------|
+| 000 | 1m |
+| 001 | 5m |
+| 010 | 30m |
+| 011 | 100m or more |
+- Length: 2 bits
 
 
 #### GPS Fix
@@ -266,15 +232,21 @@ precision.
 
 - Description: represents the angle between the horizontal displacement and the
   true North.
-- Format: Entier non signé.
+- Format: Unsigned integer.
 - Unit: 1 degree. Values range from 0 to 359 with 1 degree accuracy
 - Length: 9 bits
 
 
 #### Vertical Speed
 - Description: Vertical speed.
-- Format: Unsigned Integer
-- Unit: 1 meter/second. Speed range from -63 to 63 m/s with 1m/s accuracy.
+- Format: Signed Integer & encoding
+
+ | Binary value| meaning | 
+ |-------------|---------|
+ | 0111110     | fall faster than 63m/s |
+ | 0111111     | free fall | 
+
+- Unit: 1 meter/second. Speed range from -63 to 60 m/s with 1m/s accuracy.
 - Length: 7 bits
 
 
@@ -284,12 +256,17 @@ precision.
 - Format: Unsigned integer. Values range from 0 to 3.
 - Length: 2 bits
 
-#### Urgency
+#### Status
 
-- Description: indicates whether the UAV is in urgency mode (connection lost
-  with remote control, engine issue…)
-- Format: Boolean  (0 means no urgency).
-- Length: 1 bit
+- Description: indicates status of aircraft
+ | value | meaning | 
+ |-------|---------|
+ | 00    | normal operation |
+ | 01    | connection lost with remote control - autonomous return home activated |
+ | 10    | engine/control issue aircraft uncontrollable ( something like squak 7700 ) |
+ | 11    | just blow up :) or reserved for future use |     
+- Format: see table - (0 means no urgency).
+- Length: 2 bit
 
 
 ### UAV Category
@@ -311,7 +288,7 @@ precision.
 - Description: CRC for payload integrity check; computed on all the payload,
   except the preamble, the sync word and the signature.
 - Format: String
-- Length: 16 bits
+- Length: 16 bits (_TODO: smaller size can be used to adjust to sie of packet_)
 
 \* _TODO: define algorithm to be used._
 
@@ -383,84 +360,3 @@ Value can be used as is.
 #### GNSS Signal precision
 
 Value can be used as is.
-
-
-## String Encoding
-
-A readable character used in any of the alphanumerical data is either a
-capital letter `A-Z`, or a number `0-9` or the characters ` `, `-`, `\_`.
-
-Each of these characters has an ASCII code between 32 and 63 (included).
-So, each of these character is stored with a code between 0 to 31, which
-is the ASCII code minus 32. The storage of these character is then done
-with 6 bits.
-
-The mapping between the characters and the value is given in the
-following table:
-
-| DEC | HEX | BINARY |  CHAR  |  DESCRIPTION       |
-| --- | --- | ------ | ------ | ------------------ |
-| 0   | 0   | 0      |  Space |  **space**          |
-| 1   | 1   | 1      |  !     |  exclamation mark   |
-| 2   | 2   | 10     |  "     |  double quote       |
-| 3   | 3   | 11     |  \#    |  number             |
-| 4   | 4   | 100    |  \$    |  dollar             |
-| 5   | 5   | 101    |  %     |  percent            |
-| 6   | 6   | 110    |  &     |  ampersand          |
-| 7   | 7   | 111    |  '     |  single quote       |
-| 8   | 8   | 1000   |  (     |  left parenthesis   |
-| 9   | 9   | 1001   |  )     |  right parenthesis  |
-| 10  | 0A  | 1010   |  \*    |  asterisk           |
-| 11  | 0B  | 1011   |  +     |  plus               |
-| 12  | 0C  | 1100   |  ,     |  comma              |
-| 13  | 0D  | 1101   |  -     |  minus              |
-| 14  | 0E  | 1110   |  .     |  period             |
-| 15  | 0F  | 1111   |  /     |  slash              |
-| 16  | 10  | 10000  |  0     |  zero               |
-| 17  | 11  | 10001  |  1     |  one                |
-| 18  | 12  | 10010  |  2     |  two                |
-| 19  | 13  | 10011  |  3     |  three              |
-| 20  | 14  | 10100  |  4     |  four               |
-| 21  | 15  | 10101  |  5     |  five               |
-| 22  | 16  | 10110  |  6     |  six                |
-| 23  | 17  | 10111  |  7     |  seven              |
-| 24  | 18  | 11000  |  8     |  eight              |
-| 25  | 19  | 11001  |  9     |  nine               |
-| 26  | 1A  | 11010  |  :     |  colon              |
-| 27  | 1B  | 11011  |  ;     |  semicolon          |
-| 28  | 1C  | 11100  |  &lt;  |  less than          |
-| 29  | 1D  | 11101  |  =     |  equality sign      |
-| 30  | 1E  | 11110  |  &gt;  |  greater than       |
-| 31  | 1F  | 11111  |  ?     |  question mark      |
-| 32  | 20  | 100000 |  @     |  at sign
-| 33  | 21  | 100001 |  A     | |
-| 34  | 22  | 100010 |  B     | |
-| 35  | 23  | 100011 |  C     | |
-| 36  | 24  | 100100 |  D     | |
-| 37  | 25  | 100101 |  E     | |
-| 38  | 26  | 100110 |  F     | |
-| 39  | 27  | 100111 |  G     | |
-| 40  | 28  | 101000 |  H     | |
-| 41  | 29  | 101001 |  I     | |
-| 42  | 2A  | 101010 |  J     | |
-| 43  | 2B  | 101011 |  K     | |
-| 44  | 2C  | 101100 |  L     | |
-| 45  | 2D  | 101101 |  M     | |
-| 46  | 2E  | 101110 |  N     | |
-| 47  | 2F  | 101111 |  O     | |
-| 48  | 30  | 110000 |  P     | |
-| 49  | 31  | 110001 |  Q     | |
-| 50  | 32  | 110010 |  R     | |
-| 51  | 33  | 110011 |  S     | |
-| 52  | 34  | 110100 |  T     | |
-| 53  | 35  | 110101 |  U     | |
-| 54  | 36  | 110110 |  V     | |
-| 55  | 37  | 110111 |  W     | |
-| 56  | 38  | 111000 |  X     | |
-| 57  | 39  | 111001 |  Y     | |
-| 58  | 3A  | 111010 |  Z     | |
-| 59  | 3B  | 111011 |  [     |  left square bracket |
-| 60  | 3C  | 111100 |  \\    |  backslash |
-| 61  | 3D  | 111101 |  ]     |  right square bracket |
-| 62  | 3E  | 111110 |  ^     |  caret / circumflex |
-| 63  | 3F  | 111111 |  \_    |  underscore |

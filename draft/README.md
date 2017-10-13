@@ -33,6 +33,9 @@ intended to be used for broadcasting the UAV flight data in real time. It can
 either be used by UAV, by add-on modules attached to a UAV, by the UAV ground
 station or by ground receivers and relays.
 
+Although radio specifications are described, this protocol may be used to 
+transfert indentification data through mobile network or any other IOT network.
+
 
 ## License
 

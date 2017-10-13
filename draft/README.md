@@ -119,26 +119,16 @@ one at the end.
 
 | block | description | type | bits | range |
 | ----- | ----------- | ---- | ---- | ----- |
-| HEADER | Protocol Identifier | Integer | 4 | 0-15 |
-| HEADER | Protocol Version | Integer | 4 | 0-15 |
+| HEADER | Protocol Version | Integer | 6 | 0-64 |
 
 
-#### Protocol Identifier
+#### Protocol Identifier & Version
 
 - Description: define the data structure specification used in the body
 - Format: unsigned integer
-- Length: 4 bits
+- Length: 6 bits
 - Values:
   - 0: UAV Open Tracking Protocol (this protocol)
-
-
-#### Protocol version
-
-- Description: version of the protocol used
-- Format: unsigned integer
-- Length: 4 bits
-- Values:
-  - 0: this protocol version
 
 
 ### Body

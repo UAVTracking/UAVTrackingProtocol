@@ -80,10 +80,11 @@ many UAVs flying in the same area, so only 16 bits CRC has been chosen.
 
 #### Periodicity
 
-When any of these two constraints has been met a new payload MUST be sent:
+When any of these two constraints has been met a new position MUST be sent:
 
 - time delay of 3 seconds
 - spatial distance of 50 meters
+- vertical change of position greater than 5 meters
 
 #### Signature
 

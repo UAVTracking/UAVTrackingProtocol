@@ -29,7 +29,7 @@ this document are to be interpreted as described in [RFC 2119](https://www.ietf.
 
 This document specifies an open radio UAV tracking protocol. This protocol is
 intended to be used for broadcasting the UAV flight data in real time. It can
-either be used by UAV, by add-ons module attached to an UAV, by the UAV ground
+either be used by UAV, by add-on modules attached to a UAV, by the UAV ground
 station or by ground receivers and relays.
 
 
@@ -38,7 +38,8 @@ station or by ground receivers and relays.
 Except otherwise stated, the content of this specification is in the public
 domain, and code samples are licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
 
-The use of this specification in products and code is entirely free: there are no royalties, restrictions, or requirements.
+The use of this specification in products and code is entirely free: there are
+no royalties, restrictions, or requirements.
 
 Manufacturers implementing this specification must ensure that the products
 conform to all applicable national or international regulations.
@@ -467,3 +468,16 @@ following table:
 | 61  | 3D  | 111101 |  ]     |  right square bracket |
 | 62  | 3E  | 111110 |  ^     |  caret / circumflex |
 | 63  | 3F  | 111111 |  \_    |  underscore |
+
+
+### Duty Cycle Demonstration
+
+Let's define messages are sent once every three seconds.
+
+1% duty cycle allows 30 ms channel occupation by message.
+
+With 50 kbps bitrate, this allows a 1500 bits message, which is 187 bytes.
+
+If the UAV is moving at 50 m/s, which is 180 km/h, the periodicity of the
+transmissions is then 1 second, because of the spatial requirement. The duty
+cycle will then limit the message length at 62 bytes.

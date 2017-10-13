@@ -10,13 +10,13 @@ this document are to be interpreted as described in [RFC 2119](https://www.ietf.
 
 ## Approvals
 
-| Organisation         | Contact     | Date       |
-| -------------------- | ----------- | ---------- |
-| Optimal Tracking     | F. Aberlenc | 2017/10/12 |
-| Hionos     | V. Brossard | 2017/10/13 |
-| Atechsys     | M. Kasbari | 2017/10/13 |
-| Atechsys     | B. Albouze | 2017/10/13 |
-| AirSpace Drone     | A. Bascoulergue | 2017/10/13 |
+| Organisation         | Contact         | Date       |
+| -------------------- | --------------- | ---------- |
+| Optimal Tracking     | F. Aberlenc     | 2017/10/12 |
+| Hionos               | V. Brossard     | 2017/10/13 |
+| Atechsys             | M. Kasbari      | 2017/10/13 |
+| Atechsys             | B. Albouze      | 2017/10/13 |
+| AirSpace Drone       | A. Bascoulergue | 2017/10/13 |
 
 ## Lexical
 

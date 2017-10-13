@@ -96,14 +96,14 @@ respected before next try.
 
 #### Payload Relay
 
-A receiver SHOULD relay a payload. The relay bit MUST be decremented by one
+A receiver CAN relay a payload. The relay bit MUST be decremented by one
 unit when relaying a payload.
 
 If the relay bit is null, the payload MUST NOT be relayed.
 
 #### Duty Cycle
 
-The Duty Cycle is 1% and MUST be respected.
+The duty cycle is 1% and MUST be respected.
 
 ## Payload Specifications
 
@@ -111,7 +111,7 @@ The payload is divided in two parts: header and body.
 
 ### Coding Rules
 
-The data is stored in binary mode. The storage is in little indian,
+The data is stored in binary mode. The storage is in little endian,
 meaning that in a byte, the highest bit is written first and the lowest
 one at the end.
 
@@ -189,7 +189,7 @@ one at the end.
 
 - Description: Serial number for the device model
 - Format: 3 bits (16 millions of possible combinations). In case of
-  alphanumerical serial number a correspondence MUST BE provided by
+  alphanumerical serial number a matching table MUST be provided by
   the manufacturer.
 - Length: 18 bits
 - Example value for «SX1»: `110011 111000 010001`
@@ -213,14 +213,14 @@ one at the end.
 #### Latitude
 
 - Description: Latitude WGS-84
-- Format: Signed integer
+- Format: signed integer
 - Unit: 180/2^24 degree. Precision below 1.20 meters
 - Length: 25 bits
 
 #### Longitude
 
 - Description: Longitude WGS-84
-- Format: Signed integer
+- Format: signed integer
 - Unit: 360/2^24 degree. Precision below 1.20 meters
 - Length: 25 bits
 
@@ -228,7 +228,7 @@ one at the end.
 #### Above Sea-Level Altitude
 
 - Description: Altitude above sea level
-- Format: Unsigned integer
+- Format: unsigned integer
 - Unit: 1 meter. The value is the exact altitude +1000.
 - Length: 7 bits
 
@@ -239,7 +239,7 @@ precision.
 #### Horizontal GPS Accuracy
 
 - Description: Horizontal Accuracy of the GPS fix.
-- Format: Unsigned Integer.
+- Format: unsigned integer
 - Unit: 1 meter. Values range from 0 to 127 meter.
 - Length: 7 bits
 
@@ -247,7 +247,7 @@ precision.
 #### Vertical GPS Accuracy
 
 - Description: Horizontal Accuracy of the GPS fix.
-- Format: Unsigned Integer.
+- Format: unsigned integer
 - Unit: 1 meter. Values range from 0 to 127 meter.
 - Length: 7 bits
 
@@ -262,7 +262,7 @@ precision.
 #### Horizontal Speed
 
 - Description: horizontal speed.
-- Format: Unsigned Integer
+- Format: unsigned integer
 - Unit: 1 meter/second. Speed range from 0 to 255 m/s with 1m/s accuracy.
 - Length: 8 bits
 
@@ -271,14 +271,14 @@ precision.
 
 - Description: represents the angle between the horizontal displacement and the
   true North.
-- Format: Entier non signé.
+- Format: unsigned integer
 - Unit: 1 degree. Values range from 0 to 359 with 1 degree accuracy
 - Length: 9 bits
 
 
 #### Vertical Speed
 - Description: Vertical speed.
-- Format: Unsigned Integer
+- Format: unsigned integer
 - Unit: 1 meter/second. Speed range from -63 to 63 m/s with 1m/s accuracy.
 - Length: 7 bits
 
@@ -286,7 +286,7 @@ precision.
 #### Relay Count
 - Description: counter for relaying the payload. Count must be decremented before
   relaying. When the count is 0, payload MUST NOT be relayed.
-- Format: Unsigned integer. Values range from 0 to 3.
+- Format: unsigned integer. Values range from 0 to 3.
 - Length: 2 bits
 
 #### Urgency
@@ -300,7 +300,7 @@ precision.
 ### UAV Category
 
 - Description: UAV Category allowing to define the risk it represents
-- Format: Unsigned Integer. Values range from 0 to 7 depending on risk level.
+- Format: unsigned integer. Values range from 0 to 7 depending on risk level.
 - Length: 3 bits
 
 
@@ -335,7 +335,7 @@ precision.
 
 Field matching table:
 
-| ASTERIX Part 29 Catégorie 129 | This protocol |
+| ASTERIX Part 29 Category 129 | This protocol |
 | ----------------------------- | ------------- |
 | Data source | 00/00 for «airborn to ground» transmissions
 | Data destination | unset for broadcast

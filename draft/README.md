@@ -482,3 +482,14 @@ With 50 kbps bitrate, this allows a 1500 bits message, which is 187 bytes.
 If the UAV is moving at 50 m/s, which is 180 km/h, the periodicity of the
 transmissions is then 1 second, because of the spatial requirement. The duty
 cycle will then limit the message length at 62 bytes.
+
+
+### Channel Congestion Avoidance Demonstration
+
+A network is said congested when 20% of the maximal usage is reached.
+
+In 3 seconds, it's then only possible to send 20% * 3 * 50000 bits, namely 3750
+bytes.
+
+This allows for 100 UAVs to be active in the same area, if the payload is
+37 bytes long and sent once every 3 seconds.

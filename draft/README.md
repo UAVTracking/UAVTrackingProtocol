@@ -20,7 +20,7 @@ this document are to be interpreted as described in [RFC 2119](https://www.ietf.
 
 ## Lexical
 
-- UAV: unmanned aerial vehicle
+- UAV: Unmanned Aerial Vehicle
 - FCE: Forward Correction Error
 - CRC: Cyclic Redundancy Check
 - LBT: Listen Before Talk
@@ -29,7 +29,7 @@ this document are to be interpreted as described in [RFC 2119](https://www.ietf.
 ## Purpose
 
 This document specifies an open radio UAV tracking protocol. This protocol is
-intended to be used for broadcasting the UAV flight data in real time. It can
+intended to be used for broadcasting the UAV flight data in real-time. It can
 either be used by UAV, by add-on modules attached to a UAV, by the UAV ground
 station or by ground receivers and relays.
 
@@ -42,8 +42,8 @@ domain, and code samples are licensed under the [Apache 2.0 License](http://www.
 The use of this specification in products and code is entirely free: there are
 no royalties, restrictions, or requirements.
 
-Manufacturers implementing this specification must ensure that the products
-conform to all applicable national or international regulations.
+Manufacturers implementing this specification must ensure that the product
+conforms to all applicable national or international regulations.
 
 ## Constraints
 
@@ -69,18 +69,18 @@ conform to all applicable national or international regulations.
 | Sync Word | 4 bytes **TO BE DEFINED** |
 
 
-For the sake of simplicity there is no «Frequency Hopping».
+For the sake of simplicity there is no “Frequency Hopping”.
 
 ### FCE vs CRC checksum
 
-The FCE enlarge the message payload and can lead to radio overflow in case of
+The FCE enlarges the message payload and can lead to radio overflow in case of
 many UAVs flying in the same area, so only 16 bits CRC has been chosen.
 
 ### Transmission Rules
 
 #### Periodicity
 
-When any of those two constraints has been met a new payload MUST be sent:
+When any of these two constraints has been met a new payload MUST be sent:
 
 - time delay of 3 seconds
 - spatial distance of 50 meters
@@ -175,7 +175,7 @@ one at the end.
   authority
 - Format: 3 readable encoded characters (see annexes)
 - Length: 18 bits
-- Example value for «DJI»: `100100 101010 101001`
+- Example value for “DJI”: `100100 101010 101001`
 
 
 #### Model Identification for a UAV / Transmitter
@@ -192,7 +192,7 @@ one at the end.
   alphanumerical serial number a matching table MUST be provided by
   the manufacturer.
 - Length: 18 bits
-- Example value for «SX1»: `110011 111000 010001`
+- Example value for “SX1”: `110011 111000 010001`
 
 
 #### Country of Registration for a UAV / Transmitter
@@ -200,7 +200,7 @@ one at the end.
 - Description: Country identifier
 - Format: 2 readable encoded characters (see annexes)
 - Length: 12 bits
-- Example value for France («FR»): `100110 110010`
+- Example value for France (“FR”): `100110 110010`
 
 
 #### Time
@@ -261,7 +261,7 @@ precision.
 
 #### Horizontal Speed
 
-- Description: horizontal speed.
+- Description: Horizontal speed.
 - Format: unsigned integer
 - Unit: 1 meter/second. Speed range from 0 to 255 m/s with 1m/s accuracy.
 - Length: 8 bits
@@ -269,7 +269,7 @@ precision.
 
 #### Heading
 
-- Description: represents the angle between the horizontal displacement and the
+- Description: Represents the angle between the horizontal displacement and the
   true North.
 - Format: unsigned integer
 - Unit: 1 degree. Values range from 0 to 359 with 1 degree accuracy
@@ -284,14 +284,14 @@ precision.
 
 
 #### Relay Count
-- Description: counter for relaying the payload. Count must be decremented before
+- Description: Counter for relaying the payload. Count must be decremented before
   relaying. When the count is 0, payload MUST NOT be relayed.
 - Format: unsigned integer. Values range from 0 to 3.
 - Length: 2 bits
 
 #### Urgency
 
-- Description: indicates whether the UAV is in urgency mode (connection lost
+- Description: Indicates whether the UAV is in urgency mode (connection lost
   with remote control, engine issue…)
 - Format: Boolean  (0 means no urgency).
 - Length: 1 bit
@@ -306,7 +306,7 @@ precision.
 
 #### Signed Flag
 
-- Description: indicates whether a signature is appended to the payload.
+- Description: Indicates whether a signature is appended to the payload.
 - Format: Boolean  (0 means no signature)
 - Length: 1 bit
 
@@ -337,7 +337,7 @@ Field matching table:
 
 | ASTERIX Part 29 Category 129 | This protocol |
 | ----------------------------- | ------------- |
-| Data source | 00/00 for «airborn to ground» transmissions
+| Data source | 00/00 for “airborn to ground” transmissions
 | Data destination | unset for broadcast
 | UAV Manufacturer Identifier | Manufacturer Identifier
 | UAS Model Identifier | Model Identifier
@@ -350,7 +350,7 @@ Field matching table:
 
 #### Data source
 
-`00/00` for «airborn to ground» transmissions.
+`00/00` for “airborn to ground” transmissions.
 
 #### Data destination
 
@@ -393,7 +393,7 @@ Value can be used as is.
 ## String Encoding
 
 A readable character used in any of the alphanumerical data is either a
-capital letter `A-Z`, or a number `0-9` or the characters ` `, `-`, `\_`.
+capital letter `A-Z`, or a number `0-9` or the characters ` `, `-`, `_`.
 
 Each of these characters has an ASCII code between 32 and 63 (included).
 So, each of these character is stored with a code between 0 to 31, which
@@ -473,7 +473,7 @@ following table:
 
 ### Duty Cycle Demonstration
 
-Let's define messages are sent once every three seconds.
+Let us define messages are sent once every three seconds.
 
 1% duty cycle allows 30 ms channel occupation by message.
 
@@ -488,8 +488,8 @@ cycle will then limit the message length at 62 bytes.
 
 A network is said congested when 20% of the maximal usage is reached.
 
-In 3 seconds, it's then only possible to send 20% * 3 * 50000 bits, namely 3750
+Within 3 seconds, it is only possible to send 20% * 3 * 50000 bits, namely 3750
 bytes.
 
-This allows for 100 UAVs to be active in the same area, if the payload is
+It allows for 100 UAVs to be active in the same area, if the payload is
 37 bytes long and sent once every 3 seconds.

@@ -41,7 +41,9 @@ conform to all applicable national or international regulations.
 
 ### Parameters
 
-| Band Range | European ISM Band H1.4 |
+
+| Parameter | Value |
+|---|---|
 | Frequency | 868.4 MHz |
 | Duty Cycle | 1% |
 | Frequency Deviation | +-50 Hz |
@@ -50,6 +52,7 @@ conform to all applicable national or international regulations.
 | Signal modulation | GFSK (BT=0.5) |
 | Preamble | 10 bits **TO BE DEFINED** (without Manchester encoding) |
 | Sync Word | 4 bytes **TO BE DEFINED** |
+
 
 For the sake of simplicity there is not «Frequency Hopping».
 
@@ -143,95 +146,68 @@ The payload is divided in two parts: header and body.
 \* _The characters transposition algorithm is detailed in the annexes._
 
 
-### Identifiant du fabricant de l’UAV ou de l’émetteur :
+### Manufacturer Identification for a UAV / Transmitter
 
--   Signification : Cet identifiant composé de 3 caractères lisibles est
-    alloué par un organisme national ou supranational.
+- Description: Identifier for the manufacturer
+- Format: 3 readable encoded characters (see annexes)
+- Length: 18 bits
+- Example value for DJI: `100100 101010 101001`
 
--   Format : 3 caractères lisibles encodés (voir annexes)
 
--   Longueur : 18 bits
+### Model Identification for a UAV / Transmitter
 
--   Example :
+- Description: Identifier provided by the manufacturer
+- Format: 3 readable encoded characters (see annexes)
+- Length: 24 bits
 
-    -   DJI : 100100 101010 101001
 
-### Identifiant du modèle d’UAV ou de l’émetteur :
+### UAV Transmitter Serial Number
 
--   Signification : Identifiant alloué par le fabricant.
+- Description: Serial number for the device model
+- Format: 3 bits (16 millions of possible combinations). In case of
+alphanumerical serial number a correspondence MUST BE provided by
+the manufacturer.
+- Length: 18 bits
+- Example value for SX1: `110011 111000 010001`
 
--   Format : 3 caractères lisibles encodés (voir annexes)
 
--   Longueur : 18 bits
+### Country of Manufacture or Registration for a UAV / Transmitter
 
--   Example :
+- Description: Country identifier
+- Format: 2 readable encoded characters (see annexes)
+- Length: 12 bits
+- Example value for France (FR): `100110 110010`
 
-    -   SX1 : 110011 111000 010001
 
-### Numéro de série de l’UAV ou de l’émetteur :
+### Timestamping
 
--   Signification : numéro de série du modèle.
+- Description: UTC time of the UTC day, in seconds
+- Format: unsigned integer
+- Length: 17 bits
 
--   Format : 3 octets soit 16 millions de combinaisons possibles. Dans
-    le cas de numéros de série alphanumériques, une correspondance doit
-    être proposée par le fabricant.
 
--   Longueur : 24 bits
+### Latitude
 
-### Pays de fabrication ou d’enregistrement de l’UAV ou de l’émetteur :
+- Description: Latitude WGS-84
+- Format: Signed integer. Unit: 180/2\^24 °. Precision below 1m20 meters
+- Length: 25 bits
 
--   Signification : Identifiant du pays de fabrication ou
-    d’enregistrement de l’UAV ou de l’émetteur.
+### Longitude
 
--   Format : 2 caractères lisibles encodés (voir annexes)
+- Description: Longitude WGS-84
+- Format: Signed integer, Unit: 180/2\^24 °. Precision below 1m20 meters
+- Length: 25 bits
 
--   Longueur : 12 bits
 
--   Example :
+### Above Sea-Level Altitude
 
-    -   FR : 100110 110010
+- Description: Altitude above sea level
+- Format: Unsigned integer, units of 1m. The value is the exact altitude +1000.
+- Length: 7 bits
 
-### Horodatage :
+> This allows representing altitutes in a -1000m / 15382 range with a 1 meters
+precision
 
--   Signification : Temps UTC du jour UTC défini en secondes.
-
--   Format : entier non signé sur 17 bits.
-
--   Longueur : 17 bits
-
-### Latitude :
-
--   Signification : Latitude WGS-84
-
--   Format : entier signé 25 bits
-
-    -   Unité 180/2\^24 °
-
-    -   Précision inférieure à 1,20 m.
-
--   Longueur : 25 bits
-
-### Longitude :
-
--   Signification : Longitude WGS-84
-
--   Format : entier signé 25 bits
-
-    -   Unité 180/2\^24 °
-
-    -   Précision inférieure à 1,20 m.
-
--   Longueur : 25 bits
-
-### Altitude au-dessus du niveau de la mer :
-
--   Signification : Altitude au-dessus du niveau de la mer.
-
--   Format : entier non signé 14 bits, unité 1m. La valeur est
-    l’altitude +1000m. Cela permet de représenter des altitudes allant
-    de -1000m à 15382m avec une précision de 1m.
-
--   Longueur : 14 bits
 
 ### Précision GPS horizontale :
 
@@ -243,21 +219,22 @@ The payload is divided in two parts: header and body.
 -   Longueur : 7 bits
 
 ### Précision GPS verticale :
-
 -   Signification : Précision verticale de la position GPS.
 
 -   Format : Entier non signé 7 bits. Unité 1m. Plage de valeur de 0 à
     127m.
-
 -   Longueur : 7 bits
+- Format: Flagde1bit:0siinvalideet1si3D.
 
-### Fix GPS :
+### GPS Fix
 
--   Signification : Indique si la position GPS est valide et 3D.
+- Description: Indicated wether the GPS location is valid for 3D
+- Format: Flag de 1 bit: 0 si invalide et 1 si 3D.
 
--   Format : Flag de 1 bit: 0 si invalide et 1 si 3D.
-
--   Longueur : 1 bit
+- Lemgth: 1 bit
+Signification : Indique si la position GPS est valide et 3D.
+• Format:Flagde1bit:0siinvalideet1si3D.
+• Longueur : 1 bit
 
 ### Vitesse horizontale :
 
@@ -489,5 +466,3 @@ following table:
   29    1D    11101    **=**       equality sign       61    3D    111101   **\]**   right square bracket
   30    1E    11110    **&gt;**    greater than        62    3E    111110   **\^**   caret / circumflex
   31    1F    11111    **?**       question mark       63    3F    111111   **\_**   underscore
-
-

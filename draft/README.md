@@ -154,8 +154,7 @@ one at the end.
 | POSITION | Latitude | Integer | 25 | -90 — 90 | 180°/2^24 |
 | POSITION | Longitude | Integer | 25 | -180 — 180 | 360°/2^24 |
 | POSITION | Altitude | Integer | 14 | -1000 — 15000 | 1 meter |
-| POSITION | GPS Horizontal Accuracy | Integer | 7 | 0 — 127 | 1 meter |
-| POSITION | GPS Vertical Accuracy | Integer | 7 | 0 — 127 | 1 meter |
+| POSITION | GPS Horizontal Accuracy | Integer | 2 | see below  |  |
 | POSITION | GPS Fix | Boolean | 1 | 0 — 1 | N/A |
 | SPEED | Horizontal Speed | Integer | 8 | 0 — 255 | 1 meter/second |
 | SPEED | Vertical Speed | Integer | 7 | -63 — 63 | 1 meter/second |
@@ -240,16 +239,15 @@ precision.
 
 - Description: Horizontal Accuracy of the GPS fix.
 - Format: unsigned integer
-- Unit: 1 meter. Values range from 0 to 127 meter.
-- Length: 7 bits
+- Unit: Accuracy is encoded in the following way
+| Field Value | Accuracy |
+|-------------|----------|
+| 000 | 1m |
+| 001 | 5m |
+| 010 | 30m |
+| 011 | 100m or more |
+- Length: 2 bits
 
-
-#### Vertical GPS Accuracy
-
-- Description: Horizontal Accuracy of the GPS fix.
-- Format: unsigned integer
-- Unit: 1 meter. Values range from 0 to 127 meter.
-- Length: 7 bits
 
 
 #### GPS Fix

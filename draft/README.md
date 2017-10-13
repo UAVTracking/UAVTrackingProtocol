@@ -161,7 +161,7 @@ one at the end.
 | SPEED | Vertical Speed | Integer | 7 | -63 — 63 | 1 meter/second |
 | SPEED | Heading | Integer | 9 | 0 — 359 | 1 degree |
 | FLAGS | Relay Count | Integer | 2 | 0 — 3 | N/A |
-| FLAGS | Urgency | Boolean | 1 | 0 — 1 | N/A |
+| FLAGS | Status | Bit flags | 2 | 0 — 1 | N/A |
 | FLAGS | UAV Category | 3 bits | 3 | | N/A |
 | CRC | CRC | String | 16 | | N/A |
 | SIGNATURE | Signature | String | 256 | | N/A |
@@ -289,12 +289,17 @@ precision.
 - Format: unsigned integer. Values range from 0 to 3.
 - Length: 2 bits
 
-#### Urgency
+#### Status
 
-- Description: Indicates whether the UAV is in urgency mode (connection lost
-  with remote control, engine issue…)
-- Format: Boolean  (0 means no urgency).
-- Length: 1 bit
+- Description: indicates status of aircraft
+ | value | meaning |
+ |-------|---------|
+ | 00    | normal operation |
+ | 01    | connection lost with remote control - autonomous return home activated |
+ | 10    | engine/control issue aircraft uncontrollable ( something like squak 7700 ) |
+ | 11    | just blow up :) or reserved for future use |
+- Format: see table - (0 means no urgency).
+- Length: 2 bit
 
 
 ### UAV Category

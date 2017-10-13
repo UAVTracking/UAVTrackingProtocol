@@ -20,7 +20,7 @@ this document are to be interpreted as described in [RFC 2119](https://www.ietf.
 
 ## Lexical
 
-- UAV: unmanned aerial vehicle
+- UAV: Unmanned Aerial Vehicle
 - FCE: Forward Correction Error
 - CRC: Cyclic Redundancy Check
 - LBT: Listen Before Talk

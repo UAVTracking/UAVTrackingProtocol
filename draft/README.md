@@ -1,6 +1,7 @@
 # UAV Tracking Open Protocol
 
 Version: draft
+
 Release date: —
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -24,7 +25,9 @@ this document are to be interpreted as described in [RFC 2119](https://www.ietf.
 ## Purpose
 
 This document specifies an open radio UAV tracking protocol. This protocol is
-intended to be used for broadcasting the UAV flight data in real time.
+intended to be used for broadcasting the UAV flight data in real time. It can
+either be used by UAV, by add-ons module attached to an UAV, by the UAV ground
+station or by ground receivers and relays.
 
 
 ## License
@@ -54,43 +57,49 @@ conform to all applicable national or international regulations.
 | Sync Word | 4 bytes **TO BE DEFINED** |
 
 
-For the sake of simplicity there is not «Frequency Hopping».
+For the sake of simplicity there is no «Frequency Hopping».
 
 ### FCE vs CRC checksum
 
 The FCE enlarge the message payload and can lead to radio overflow in case of many UAVs flying in the same area, so only 16 bits CRC has been chosen.
 
-## Transmission Rules
+### Transmission Rules
 
-### Periodicity
+#### Periodicity
 
 When any of those two constraints has been met a new payload MUST be sent:
 
 - time delay of 3 seconds
 - spatial distance of 50 meters
 
-### Signature
+#### Signature
 
 An optional signature CAN be appended to the payload.
 
-### Transmission Rules
+#### Transmission Rules
 
 LBT MUST be honoured. If the channel is not free, a random waiting time MUST be
 respected before next try.
 
-### Payload Relay
+#### Payload Relay
 
 A receiver SHOULD relay a payload. The relay bit MUST be decremented by one unit when relaying a payload.
 
 If the relay bit is null, the payload MUST NOT be relayed.
 
-### Duty Cycle
+#### Duty Cycle
 
 The Duty Cycle is 1%.
 
 ## Payload Specifications
 
 The payload is divided in two parts: header and body.
+
+### Coding Rules
+
+The data are stored in binary mode. The storage is in little indian
+meaning that in a byte, the highest bit is written first and the lowest
+one at the end.
 
 ### Header
 
@@ -146,323 +155,303 @@ The payload is divided in two parts: header and body.
 \* _The characters transposition algorithm is detailed in the annexes._
 
 
-### Manufacturer Identification for a UAV / Transmitter
+#### Manufacturer Identification for a UAV / Transmitter
 
-- Description: Identifier for the manufacturer
+- Description: Identifier for the manufacturer, provided by the country
+  authority
 - Format: 3 readable encoded characters (see annexes)
 - Length: 18 bits
-- Example value for DJI: `100100 101010 101001`
+- Example value for «DJI»: `100100 101010 101001`
 
 
-### Model Identification for a UAV / Transmitter
+#### Model Identification for a UAV / Transmitter
 
 - Description: Identifier provided by the manufacturer
 - Format: 3 readable encoded characters (see annexes)
 - Length: 24 bits
 
 
-### UAV Transmitter Serial Number
+#### UAV Transmitter Serial Number
 
 - Description: Serial number for the device model
 - Format: 3 bits (16 millions of possible combinations). In case of
-alphanumerical serial number a correspondence MUST BE provided by
-the manufacturer.
+  alphanumerical serial number a correspondence MUST BE provided by
+  the manufacturer.
 - Length: 18 bits
-- Example value for SX1: `110011 111000 010001`
+- Example value for «SX1»: `110011 111000 010001`
 
 
-### Country of Manufacture or Registration for a UAV / Transmitter
+#### Country of Registration for a UAV / Transmitter
 
 - Description: Country identifier
 - Format: 2 readable encoded characters (see annexes)
 - Length: 12 bits
-- Example value for France (FR): `100110 110010`
+- Example value for France («FR»): `100110 110010`
 
 
-### Timestamping
+#### Time
 
-- Description: UTC time of the UTC day, in seconds
+- Description: UTC time of the day, in seconds
 - Format: unsigned integer
 - Length: 17 bits
 
 
-### Latitude
+#### Latitude
 
 - Description: Latitude WGS-84
-- Format: Signed integer. Unit: 180/2\^24 °. Precision below 1m20 meters
+- Format: Signed integer
+- Unit: 180/2^24 degree. Precision below 1.20 meters
 - Length: 25 bits
 
-### Longitude
+#### Longitude
 
 - Description: Longitude WGS-84
-- Format: Signed integer, Unit: 180/2\^24 °. Precision below 1m20 meters
+- Format: Signed integer
+- Unit: 360/2^24 degree. Precision below 1.20 meters
 - Length: 25 bits
 
 
-### Above Sea-Level Altitude
+#### Above Sea-Level Altitude
 
 - Description: Altitude above sea level
-- Format: Unsigned integer, units of 1m. The value is the exact altitude +1000.
+- Format: Unsigned integer
+- Unit: 1 meter. The value is the exact altitude +1000.
 - Length: 7 bits
 
-> This allows representing altitutes in a -1000m / 15382 range with a 1 meters
-precision
+This allows representing altitudes in a -1000m / 15382 range with a 1 meter
+precision.
 
 
-### Précision GPS horizontale :
+#### Horizontal GPS Accuracy
 
--   Signification : Précision horizontale de la position GPS.
+- Description: Horizontal Accuracy of the GPS fix.
+- Format: Unsigned Integer.
+- Unit: 1 meter. Values range from 0 to 127 meter.
+- Length: 7 bits
 
--   Format : Entier non signé 7 bits. Unité 1m. Plage de valeur de 0 à
-    127m.
 
--   Longueur : 7 bits
+#### Vertical GPS Accuracy
 
-### Précision GPS verticale :
--   Signification : Précision verticale de la position GPS.
+- Description: Horizontal Accuracy of the GPS fix.
+- Format: Unsigned Integer.
+- Unit: 1 meter. Values range from 0 to 127 meter.
+- Length: 7 bits
 
--   Format : Entier non signé 7 bits. Unité 1m. Plage de valeur de 0 à
-    127m.
--   Longueur : 7 bits
-- Format: Flagde1bit:0siinvalideet1si3D.
 
-### GPS Fix
+#### GPS Fix
 
-- Description: Indicated wether the GPS location is valid for 3D
-- Format: Flag de 1 bit: 0 si invalide et 1 si 3D.
+- Description: Indicates whether the GPS location is valid for 3D
+- Format: boolean (0 means no valid position)
+- Length: 1 bit
 
-- Lemgth: 1 bit
-Signification : Indique si la position GPS est valide et 3D.
-• Format:Flagde1bit:0siinvalideet1si3D.
-• Longueur : 1 bit
 
-### Vitesse horizontale :
+#### Horizontal Speed
 
--   Signification : Vitesse horizontale.
+- Description: horizontal speed.
+- Format: Unsigned Integer
+- Unit: 1 meter/second. Speed range from 0 to 255 m/s with 1m/s accuracy.
+- Length: 8 bits
 
--   Format : Entier non signé 8 bits. Unité 1 mètre/seconde. Plage de
-    vitesse de 0 à 255 m/s avec une précision de 1m/s.
 
--   Longueur : 8 bits
+#### Heading
 
-### Cap :
+- Description: represents the angle between the horizontal displacement and the
+  true North.
+- Format: Entier non signé.
+- Unit: 1 degree. Values range from 0 to 359 with 1 degree accuracy
+- Length: 9 bits
 
--   Signification : Cap de la vitesse horizontale.
 
--   Format : Entier non signé 9 bits. Unité 1 degré. Le cap représente
-    l’angle que fait le vecteur vitesse horizontale avec le Nord vrai.
-    La plage de valeur va de 0 à 359 degrés avec une précision de 1
-    degré.
+#### Vertical Speed
+- Description: Vertical speed.
+- Format: Unsigned Integer
+- Unit: 1 meter/second. Speed range from -63 to 63 m/s with 1m/s accuracy.
+- Length: 7 bits
 
--   Longueur : 9 bits
 
-### Vitesse verticale :
+#### Relay Count
+- Description: counter for relaying the payload. Count must be decremented before
+  relaying. When the count is 0, payload MUST NOT be relayed.
+- Format: Unsigned integer. Values range from 0 to 3.
+- Length: 2 bits
 
--   Signification : Vitesse verticale.
+#### Urgency
 
--   Format : Entier signé 7 bits. Unité 1 mètre/seconde. La vitesse est
-    positive vers le haut. La plage de valeur va de -63m/s à 63 m/s avec
-    une précision de 1 m/s.
+- Description: indicates whether the UAV is in urgency mode (connection lost
+  with remote control, engine issue…)
+- Format: Boolean  (0 means no urgency).
+- Length: 1 bit
 
--   Longueur : 7 bits
 
-### Relay count :
+### UAV Category
 
--   Signification : Indice de répétition pour le relayage des trames. Il
-    est présenté dans le protocole OGN. A chaque relayage, l’indice est
-    décrémenté. Lorsqu’il atteint 0, aucun relayage n’est fait.
+- Description: UAV Category allowing to define the risk it represents
+- Format: Unsigned Integer. Values range from 0 to 7 depending on risk level.
+- Length: 3 bits
 
--   Format : Entier non signé2 bits. Plage de valeur de 0 à 3.
 
--   Longueur : 8 bits
+#### Signed Flag
 
-### Urgences :
+- Description: indicates whether a signature is appended to the payload.
+- Format: Boolean  (0 means no signature)
+- Length: 1 bit
 
--   Signification : Ce flag indique si l’UAV est en mode d’urgence
-    (perte de contrôle, panne moteur, …)
 
--   Format : 1 bit : 0 Pas d’urgence et 1 urgence.
+#### CRC :
 
--   Longueur : 1 bit
+- Description: CRC for payload integrity check; computed on all the payload,
+  except the preamble, the sync word and the signature.
+- Format: String
+- Length: 16 bits
 
-### Classe d’UAV :
+\* _TODO: define with algorithm exactly should be used._
 
--   Signification : Classe d’UAV selon un standard permettant d’évaluer
-    le risque que représente l’UAV.
+#### Signature
 
--   Format : Entier non signé 3 bits. Plage de valeur de 0 à 7 selon le
-    niveau de risque.
+- Description: AES-CMAC signature of the payload (header + body); the secret key
+  should have been given by the national administration; this is an optional
+  field.
+- Format: String
+- Length: 256 bits
 
--   Longueur : 3 bits
 
-### Envoi signé :
+## Annexes
 
--   Signification : Ce flag indique si une signature est présente en fin
-    de message.
+### EUROCONTROL ASTERIX part 29 category 129 conformity
 
--   Format : 1 bit : 0 signifie pas de signature et 1 signifie
-    signature.
+Field matching table:
 
--   Longueur : 1 bit
+| ASTERIX Part 29 Catégorie 129 | This protocol |
+| ----------------------------- | ------------- |
+| Data source | 00/00 for «airborn to ground» transmissions
+| Data destination | unset for broadcast
+| UAV Manufacturer Identifier | Manufacturer Identifier
+| UAS Model Identifier | Model Identifier
+| UAS Serial Number or Aircraft ID | Serial Number
+| UAS country | Country Registration
+| Time of Day | Time of Day
+| Position in WGS-84 Coordinates - LATITUDE - LONGITUDE | Position in WGS-84 Coordinates - LATITUDE - LONGITUDE
+| Altitude above Mean Sea Level (AMSL) | Altitude above Mean Sea Level (AMSL)
+| GNSS Signal precision | GPS accuracy H m
 
-### CRC :
+#### Data source
 
--   Signification : CRC 16 bits\* assurant l’intégrité du message. Il
-    est calculé sur l’ensemble du message, à l’exception du préambule,
-    du SYNC WORD et de la SIGNATURE.
+`00/00` for «airborn to ground» transmissions.
 
--   Format 16 bits.
+#### Data destination
 
--   Longueur : 16 bits
+Unset for broadcast signal.
 
-> *\*Plusieurs algorithmes de CRC 16 bits existent. Il conviendra de
-> préciser lequel est retenu.*
+#### UAS Manufacturer Identifier
 
-### Signature :
+The string encoding/decoding must be applied.
 
--   Signification : Les blocs ENTETE et DATA réunis sont signés par
-    l’algorithme AES-CMAC utilisant une clé spécifique à l’UAV
-    préalablement échangée avec l’organisme étatique pour lui permettre
-    de vérifier l’intégrité et l’authenticité du message.
+#### UAS Model Identifier
 
--   Format : chaine de 32\*\* octets.
+The string encoding/decoding must be applied.
 
--   Longueur : 256\*\* bits
+#### UAS Serial Number or Aircraft ID
 
-*\*\*La taille de la signature peut être réduite afin de réduire la
-taille du message. Une étude est en cours* sur cette troncature pouvant
-permettre de réduire à 64 bits la longueur de la signature.
+A translation table MUST be defined by the manufacturer for the conversion if
+needed.
 
-Conformité avec le format EUROCONTROL ASTERIX Part 29 Catégorie 129 
-====================================================================
+#### UAS country
 
-Le protocole étant directement issu du format « EUROCONTROL ASTERIX Part
-29 Catégorie 129 », la correspondance est immédiate :
+The string encoding/decoding must be applied.
 
-  ----------------------------------------------------------- ------------------------------------------------------------------- --
-  **ASTERIX Part 29 Catégorie 129**                           **Correspondance dans le Protocole**
-  Data source                                                 00/00 pour les communications « airborn to ground »
-  Data destination                                            Inutile pour un signal broadcast
-  []{#_Hlk495515362 .anchor}UAV Manufacturer Identifier       Identifiant du fabricant de l’UAV ou de l’émetteur
-  UAS Model Identifier                                        Identifiant du modèle d’UAV ou d’émetteur
-  UAS Serial Number or Aircraft ID (depends of adress type)   Numéro de série de l’UAV ou de l’émetteur
-  UAS country                                                 Pays de fabrication ou d’enregistrement de l’UAV ou de l’émetteur
-  Time of Day                                                 Time of Day
-  Position in WGS-84 Coordinates - LATITUDE - LONGITUDE       Position in WGS-84 Coordinates - LATITUDE - LONGITUDE
-  Altitude above Mean Sea Level (AMSL)                        Altitude above Mean Sea Level (AMSL)
-  GNSS Signal precision                                       GPS accuracy H m
-  ----------------------------------------------------------- ------------------------------------------------------------------- --
+#### Time of Day
 
-Data source
------------
+Must be converted from 1 second unit to 1/128 seconds unit.
 
-00/00 pour les communications « airborn to ground ».
+#### Position in WGS-84 Coordinates – LATITUDE – LONGITUDE
 
-Data destination
-----------------
+MUST be converted from degree/2\^24 to degree/2\^30
 
-Inutile pour un signal « broadast ».
+#### Altitude above Mean Sea Level (AMSL)
 
-UAS Manufacturer Identifier
----------------------------
+Value can be used as is.
 
-Correspondance totale
+#### GNSS Signal precision
 
-UAS Model Identifier
---------------------
+Value can be used as is.
 
-Correspondance totale
 
-UAS Serial Number or Aircraft ID (depends of adress type)
----------------------------------------------------------
-
-Correspondance à définir par le fabricant entre les 12 caractères du
-format ASTERIX et les 24 bits du protocole.
-
-UAS country
------------
-
-Correspondance totale
-
-Time of Day
------------
-
-Conversion de secondes en 1/128 de secondes.
-
-Position in WGS-84 Coordinates – LATITUDE – LONGITUDE
------------------------------------------------------
-
-Conversion de degrés/2\^24 en degrés/2\^30
-
-Altitude above Mean Sea Level (AMSL)
-------------------------------------
-
-Correspondance totale
-
-GNSS Signal precision
----------------------
-
-Correspondance totale
-
-**\
-**
-
-Annexes
-=======
-
-Coding rules
-------------
-
-### Storage
-
-The data are stored in binary mode. The storage is in little indian
-meaning that in a byte, the highest bit is written first and the lowest
-one at the end.
-
-### Character encoding
+## String Encoding
 
 A readable character used in any of the alphanumerical data is either a
-capital letter A-Z, or a number 0-9 or the characters ‘ ‘, ‘-‘, ‘\_’.
+capital letter `A-Z`, or a number `0-9` or the characters ` `, `-`, `\_`.
 
-Each of these characters has an ascii code between 32 and 63 (included).
+Each of these characters has an ASCII code between 32 and 63 (included).
 So, each of these character is stored with a code between 0 to 31, which
-is the ascii code minus 32. The storage of these character is then done
-in 6 bits long word.
+is the ASCII code minus 32. The storage of these character is then done
+with 6 bits.
 
 The mapping between the characters and the value is given in the
 following table:
 
-  DEC   HEX   BINARY   CHAR        DESCRIPTION         DEC   HEX   BINARY   CHAR     DESCRIPTION
-  ----- ----- -------- ----------- ------------------- ----- ----- -------- -------- ----------------------
-  0     0     0        **Space**   **space**           32    20    100000   **@**    at sign
-  1     1     1        **!**       exclamation mark    33    21    100001   **A**
-  2     2     10       **"**       double quote        34    22    100010   **B**
-  3     3     11       **\#**      number              35    23    100011   **C**
-  4     4     100      **\$**      dollar              36    24    100100   **D**
-  5     5     101      **%**       percent             37    25    100101   **E**
-  6     6     110      **&**       ampersand           38    26    100110   **F**
-  7     7     111      **'**       single quote        39    27    100111   **G**
-  8     8     1000     **(**       left parenthesis    40    28    101000   **H**
-  9     9     1001     **)**       right parenthesis   41    29    101001   **I**
-  10    0A    1010     **\***      asterisk            42    2A    101010   **J**
-  11    0B    1011     **+**       plus                43    2B    101011   **K**
-  12    0C    1100     **,**       comma               44    2C    101100   **L**
-  13    0D    1101     **-**       minus               45    2D    101101   **M**
-  14    0E    1110     **.**       period              46    2E    101110   **N**
-  15    0F    1111     **/**       slash               47    2F    101111   **O**
-  16    10    10000    **0**       zero                48    30    110000   **P**
-  17    11    10001    **1**       one                 49    31    110001   **Q**
-  18    12    10010    **2**       two                 50    32    110010   **R**
-  19    13    10011    **3**       three               51    33    110011   **S**
-  20    14    10100    **4**       four                52    34    110100   **T**
-  21    15    10101    **5**       five                53    35    110101   **U**
-  22    16    10110    **6**       six                 54    36    110110   **V**
-  23    17    10111    **7**       seven               55    37    110111   **W**
-  24    18    11000    **8**       eight               56    38    111000   **X**
-  25    19    11001    **9**       nine                57    39    111001   **Y**
-  26    1A    11010    **:**       colon               58    3A    111010   **Z**
-  27    1B    11011    **;**       semicolon           59    3B    111011   **\[**   left square bracket
-  28    1C    11100    **&lt;**    less than           60    3C    111100   **\\**   backslash
-  29    1D    11101    **=**       equality sign       61    3D    111101   **\]**   right square bracket
-  30    1E    11110    **&gt;**    greater than        62    3E    111110   **\^**   caret / circumflex
-  31    1F    11111    **?**       question mark       63    3F    111111   **\_**   underscore
+| DEC | HEX | BINARY |  CHAR  |  DESCRIPTION       |
+| --- | --- | ------ | ------ | ------------------ |
+| 0   | 0   | 0      |  Space |  **space**          |
+| 1   | 1   | 1      |  !     |  exclamation mark   |
+| 2   | 2   | 10     |  "     |  double quote       |
+| 3   | 3   | 11     |  \#    |  number             |
+| 4   | 4   | 100    |  \$    |  dollar             |
+| 5   | 5   | 101    |  %     |  percent            |
+| 6   | 6   | 110    |  &     |  ampersand          |
+| 7   | 7   | 111    |  '     |  single quote       |
+| 8   | 8   | 1000   |  (     |  left parenthesis   |
+| 9   | 9   | 1001   |  )     |  right parenthesis  |
+| 10  | 0A  | 1010   |  \*    |  asterisk           |
+| 11  | 0B  | 1011   |  +     |  plus               |
+| 12  | 0C  | 1100   |  ,     |  comma              |
+| 13  | 0D  | 1101   |  -     |  minus              |
+| 14  | 0E  | 1110   |  .     |  period             |
+| 15  | 0F  | 1111   |  /     |  slash              |
+| 16  | 10  | 10000  |  0     |  zero               |
+| 17  | 11  | 10001  |  1     |  one                |
+| 18  | 12  | 10010  |  2     |  two                |
+| 19  | 13  | 10011  |  3     |  three              |
+| 20  | 14  | 10100  |  4     |  four               |
+| 21  | 15  | 10101  |  5     |  five               |
+| 22  | 16  | 10110  |  6     |  six                |
+| 23  | 17  | 10111  |  7     |  seven              |
+| 24  | 18  | 11000  |  8     |  eight              |
+| 25  | 19  | 11001  |  9     |  nine               |
+| 26  | 1A  | 11010  |  :     |  colon              |
+| 27  | 1B  | 11011  |  ;     |  semicolon          |
+| 28  | 1C  | 11100  |  &lt;  |  less than          |
+| 29  | 1D  | 11101  |  =     |  equality sign      |
+| 30  | 1E  | 11110  |  &gt;  |  greater than       |
+| 31  | 1F  | 11111  |  ?     |  question mark      |
+| 32  | 20  | 100000 |  @     |  at sign
+| 33  | 21  | 100001 |  A     | |
+| 34  | 22  | 100010 |  B     | |
+| 35  | 23  | 100011 |  C     | |
+| 36  | 24  | 100100 |  D     | |
+| 37  | 25  | 100101 |  E     | |
+| 38  | 26  | 100110 |  F     | |
+| 39  | 27  | 100111 |  G     | |
+| 40  | 28  | 101000 |  H     | |
+| 41  | 29  | 101001 |  I     | |
+| 42  | 2A  | 101010 |  J     | |
+| 43  | 2B  | 101011 |  K     | |
+| 44  | 2C  | 101100 |  L     | |
+| 45  | 2D  | 101101 |  M     | |
+| 46  | 2E  | 101110 |  N     | |
+| 47  | 2F  | 101111 |  O     | |
+| 48  | 30  | 110000 |  P     | |
+| 49  | 31  | 110001 |  Q     | |
+| 50  | 32  | 110010 |  R     | |
+| 51  | 33  | 110011 |  S     | |
+| 52  | 34  | 110100 |  T     | |
+| 53  | 35  | 110101 |  U     | |
+| 54  | 36  | 110110 |  V     | |
+| 55  | 37  | 110111 |  W     | |
+| 56  | 38  | 111000 |  X     | |
+| 57  | 39  | 111001 |  Y     | |
+| 58  | 3A  | 111010 |  Z     | |
+| 59  | 3B  | 111011 |  [     |  left square bracket |
+| 60  | 3C  | 111100 |  \\    |  backslash |
+| 61  | 3D  | 111101 |  ]     |  right square bracket |
+| 62  | 3E  | 111110 |  ^     |  caret / circumflex |
+| 63  | 3F  | 111111 |  \_    |  underscore |

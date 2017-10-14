@@ -8,7 +8,7 @@ Raise [a new issue](https://github.com/UAVTracking/UAVTrackingProtocol/issues/ne
 
 Submit an *atomic* pull-request if you are comfortable with Github’s workflow or send us an email and we will create the pull-request for you.
 
-Set yourself as a “watcher” to be notified of all discussions about the work in progress.
+Set yourself [as a “watcher”](https://github.com/UAVTracking/UAVTrackingProtocol/watchers) to be notified of all discussions about the work in progress.
 
 
 ## Arbitration

@@ -17,6 +17,7 @@ this document are to be interpreted as described in [RFC 2119](https://www.ietf.
 | Atechsys             | M. Kasbari      | 2017/10/13 |
 | Atechsys             | B. Albouze      | 2017/10/13 |
 | AirSpace Drone       | A. Bascoulergue | 2017/10/13 |
+| AirSpace Drone       | W. Betinni      | 2017/10/13 |
 
 ## Lexical
 

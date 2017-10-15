@@ -21,10 +21,14 @@ this document are to be interpreted as described in [RFC 2119](https://www.ietf.
 
 ## Lexical
 
+- UAS: Unmanned Aerial System
 - UAV: Unmanned Aerial Vehicle
-- FCE: Forward Correction Error
+- FEC: Forward Error Correction
 - CRC: Cyclic Redundancy Check
 - LBT: Listen Before Talk
+- ERP: Effective Radiated Power
+- GFSK: Gaussian Frequency-Shift Keying
+- BT: Pulse shaping parameter for GFSK (filter bandwidth times symbol duration)
 
 
 ## Purpose
@@ -62,7 +66,7 @@ conforms to all applicable national or international regulations.
 |---|---|
 | Frequency | 868.4 MHz |
 | Duty Cycle | 1% |
-| Frequency Deviation | +-50 Hz |
+| Frequency Deviation | +-50 kHz |
 | Bitrate | 100 kbps with Manchester encoding (effective 50 kbps) |
 | Power | 25 mW ERP |
 | Signal modulation | GFSK (BT=0.5) |
@@ -72,9 +76,9 @@ conforms to all applicable national or international regulations.
 
 For the sake of simplicity there is no “Frequency Hopping”.
 
-### FCE vs CRC checksum
+### FEC vs CRC checksum
 
-The FCE enlarges the message payload and can lead to radio overflow in case of
+The FEC enlarges the message payload and can lead to radio overflow in case of
 many UAVs flying in the same area, so only 16 bits CRC has been chosen.
 
 ### Transmission Rules

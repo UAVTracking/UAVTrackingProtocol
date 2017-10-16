@@ -283,10 +283,15 @@ precision.
 
 #### Vertical Speed
 - Description: Vertical speed.
-- Format: unsigned integer
-- Unit: 1 meter/second. Speed range from -63 to 63 m/s with 1m/s accuracy.
-- Length: 7 bits
+- Format: Signed Integer & encoding
 
+ | Binary value| meaning |
+ |-------------|---------|
+ | 0111110     | fall faster than 63m/s |
+ | 0111111     | free fall |
+
+- Unit: 1 meter/second. Speed range from -63 to 60 m/s with 1m/s accuracy.
+- Length: 7 bits
 
 #### Relay Count
 - Description: Counter for relaying the payload. Count must be decremented before

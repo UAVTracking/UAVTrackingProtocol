@@ -164,7 +164,7 @@ one at the end.
 | POSITION | GPS Fix | Boolean | 1 | 0 — 1 | N/A |
 | SPEED | Horizontal Speed | Integer | 8 | 0 — 255 | 1 meter/second |
 | SPEED | Vertical Speed | Integer | 7 | -63 — 63 | 1 meter/second |
-| SPEED | Heading | Integer | 9 | 0 — 359 | 1 degree |
+| SPEED | Track | Integer | 9 | 0 — 359 | 1 degree |
 | FLAGS | Relay Count | Integer | 2 | 0 — 3 | N/A |
 | FLAGS | Urgency | Boolean | 1 | 0 — 1 | N/A |
 | FLAGS | UAV Category | 3 bits | 3 | | N/A |
@@ -272,10 +272,10 @@ precision.
 - Length: 8 bits
 
 
-#### Heading
+#### Track
 
-- Description: Represents the angle between the horizontal displacement and the
-  true North.
+- Description: Represents the angle between the horizontal displacement over
+  ground and the true North.
 - Format: unsigned integer
 - Unit: 1 degree. Values range from 0 to 359 with 1 degree accuracy
 - Length: 9 bits
